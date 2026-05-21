@@ -72,13 +72,24 @@ async function addTodo() {
             body: JSON.stringify({ text })
         });
 
-        if (res.ok) {
+            if (res.ok) {
             input.value = '';
             fetchTodos();
         } else {
-            const err = await res.json();
-            alert(err.error || 'Failed to add todo');
-            console.error('Add todo error:', err);
+            const contentType = res.headers.get('Content-Type') || '';
+            let errorMessage = `Request failed with status ${res.status}`;
+
+            if (contentType.includes('application/json')) {
+                const err = await res.json();
+                errorMessage = err.error || errorMessage;
+                console.error('Add todo error:', err);
+            } else {
+                const text = await res.text();
+                errorMessage = text || errorMessage;
+                console.error('Add todo error (non-JSON):', res.status, text);
+            }
+
+            alert(errorMessage);
         }
     } catch (e) {
         console.error('Error adding todo:', e);
