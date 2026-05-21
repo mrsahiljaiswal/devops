@@ -41,7 +41,6 @@ stages:
     - script: npm audit --audit-level=low || exit 0
       displayName: 'Security Scan'
 
-
 # =========================
 # STAGE 2 - SONARCLOUD
 # =========================
@@ -64,13 +63,10 @@ stages:
     - checkout: self
       displayName: 'Checkout Source Code'
 
-    - script: npm install -g sonar-scanner
-      displayName: 'Install SonarScanner'
-
     - script: sonar-scanner -Dsonar.token=$(SONAR_TOKEN)
       displayName: 'Run SonarCloud Analysis'
 
-
+      
 # =========================
 # STAGE 3 - DOCKER BUILD
 # =========================
