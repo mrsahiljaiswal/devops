@@ -5,9 +5,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Backend deployment configuration
-const FRONTEND_URL = process.env.FRONTEND_URL || '';
-const RENDER_URL = process.env.API_URL || 'https://devops-rkyj.onrender.com';
-const allowedOrigins = [FRONTEND_URL, RENDER_URL, 'http://localhost:3000'].filter(Boolean);
+const FRONTEND_URLS = (process.env.FRONTEND_URL || '')
+  .split(',')
+  .map(url => url.trim())
+  .filter(Boolean);
+const allowedOrigins = [...new Set([...FRONTEND_URLS, 'http://localhost:3000'])];
 
 // Middleware
 app.use(
@@ -15,7 +17,7 @@ app.use(
     origin: (origin, callback) => {
       // Allow non-browser requests (e.g. curl or server-to-server)
       if (!origin) return callback(null, true);
-      // Allow any origin if no explicit frontend URL is configured.
+      // Allow any browser origin when no explicit front-end URL is configured.
       if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
