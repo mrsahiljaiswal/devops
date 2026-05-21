@@ -45,7 +45,7 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           bat 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin ${DOCKER_REGISTRY}'
-          bat 'docker push ${DOCKER_IMAGE}:${DOCKER_TAG}'
+          bat 'docker push %DOCKER_IMAGE%:%DOCKER_TAG%'
         }
       }
     }
