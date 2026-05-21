@@ -1,0 +1,100 @@
+trigger:
+- main
+
+variables:
+  DOCKER_IMAGE: 'mrsahiljaiswal/simple-app'
+  DOCKER_TAG: 'latest'
+
+stages:
+
+# =========================
+# STAGE 1 - BUILD & TEST
+# =========================
+
+- stage: Build_and_Test
+  displayName: 'Build and Test Stage'
+
+  jobs:
+
+  - job: BuildJob
+    displayName: 'Build Job'
+
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+
+    - checkout: self
+      displayName: 'Checkout Source Code'
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
+
+    - script: npm install
+      displayName: 'Install Dependencies'
+
+    - script: npm outdated --depth=0
+      displayName: 'Dependency Check'
+
+    - script: npm audit --audit-level=low
+      displayName: 'Security Scan'
+
+
+# =========================
+# STAGE 2 - SONARCLOUD
+# =========================
+
+- stage: SonarCloud_Analysis
+  displayName: 'SonarCloud Analysis Stage'
+
+  dependsOn: Build_and_Test
+
+  jobs:
+
+  - job: SonarJob
+    displayName: 'SonarCloud Job'
+
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+
+    - checkout: self
+      displayName: 'Checkout Source Code'
+
+    - script: npm install -g sonar-scanner
+      displayName: 'Install SonarScanner'
+
+    - script: sonar-scanner -Dsonar.token=$(SONAR_TOKEN)
+      displayName: 'Run SonarCloud Analysis'
+
+
+# =========================
+# STAGE 3 - DOCKER BUILD
+# =========================
+
+- stage: Docker_Build
+  displayName: 'Docker Build Stage'
+
+  dependsOn: SonarCloud_Analysis
+
+  jobs:
+
+  - job: DockerJob
+    displayName: 'Docker Build Job'
+
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+
+    - checkout: self
+      displayName: 'Checkout Source Code'
+
+    - script: docker build -t $(DOCKER_IMAGE):$(DOCKER_TAG) .
+      displayName: 'Docker Build'
+
+    - script: echo Docker Build Completed Successfully
+      displayName: 'Docker Status'
