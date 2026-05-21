@@ -1,0 +1,17 @@
+{
+  "name": "simple-app",
+  "version": "1.0.0",
+  "description": "Very simple frontend and backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"No tests configured\"",
+    "docker:build": "docker build -t simple-app .",
+    "docker:run": "docker run --rm -p 3000:3000 simple-app",
+    "check-deps": "npm outdated --depth=0",
+    "check-vuln": "npm audit --audit-level=low"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

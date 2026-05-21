@@ -73,7 +73,7 @@ The `Jenkinsfile` includes stages for:
 - Security scan
 - Docker build
 - Docker push (optional)
-- Azure deploy (optional)
+- Azure deploy 
 
 You can use Jenkins credentials for Docker Hub and Azure service principal authentication.
 
