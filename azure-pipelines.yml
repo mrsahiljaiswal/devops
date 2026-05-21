@@ -20,7 +20,7 @@ stages:
     displayName: 'Build Job'
 
     pool:
-      vmImage: 'ubuntu-latest'
+      name: Default
 
     steps:
 
@@ -35,10 +35,10 @@ stages:
     - script: npm install
       displayName: 'Install Dependencies'
 
-    - script: npm outdated --depth=0 || true
+    - script: npm outdated --depth=0 || exit 0
       displayName: 'Dependency Check'
 
-    - script: npm audit --audit-level=low || true
+    - script: npm audit --audit-level=low || exit 0
       displayName: 'Security Scan'
 
 
@@ -57,7 +57,7 @@ stages:
     displayName: 'SonarCloud Job'
 
     pool:
-      vmImage: 'ubuntu-latest'
+      name: Default
 
     steps:
 
@@ -86,7 +86,7 @@ stages:
     displayName: 'Docker Build Job'
 
     pool:
-      vmImage: 'ubuntu-latest'
+      name: Default
 
     steps:
 
