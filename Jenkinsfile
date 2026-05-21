@@ -34,6 +34,19 @@ pipeline {
             }
         }
 
+        stage('OWASP Dependency Check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan .',
+                odcInstallation: 'OWASP'
+            }
+        }
+
+        stage('Publish OWASP Report') {
+            steps {
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+
         stage('Security Scan') {
             steps {
                 bat 'npm audit --audit-level=low'
@@ -41,10 +54,10 @@ pipeline {
         }
 
         stage('SonarQube Scan') {
-    steps {
-        bat 'echo SonarQube analysis completed successfully'
-    }
-}
+            steps {
+                bat 'echo SonarQube analysis completed successfully'
+            }
+        }
 
         stage('Docker Build') {
             steps {
