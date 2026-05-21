@@ -1,11 +1,31 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+// Backend deployment configuration
+const FRONTEND_URL = process.env.FRONTEND_URL || '';
+const RENDER_URL = process.env.API_URL || 'https://devops-rkyj.onrender.com';
+const allowedOrigins = [FRONTEND_URL, RENDER_URL, 'http://localhost:3000'].filter(Boolean);
 
 // Middleware
-app.use(express.static('public'));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow non-browser requests (e.g. curl or server-to-server)
+      if (!origin) return callback(null, true);
+      // Allow any origin if no explicit frontend URL is configured.
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('CORS policy does not allow access from the specified Origin.'));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(express.static('public'));
 
 // In-memory todo store
 let todos = [];
@@ -57,5 +77,6 @@ app.delete('/api/todos/:id', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at port ${PORT}`);
+  console.log(`Using frontend origin allowlist: ${allowedOrigins.join(', ')}`);
 });

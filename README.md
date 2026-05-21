@@ -1,6 +1,6 @@
 # Simple Frontend & Backend Project
 
-A simple web application with an Express.js backend and a frontend served from `public/`.
+A simple web application with a static frontend served from `public/` and an Express.js backend that can run on Render, Docker, or Azure.
 
 ## Project Structure
 
@@ -42,6 +42,8 @@ Open your browser at:
 ```bash
 http://localhost:3000
 ```
+
+For production, the frontend should point to the Render backend via the centralized config file or `API_URL` environment variable.
 
 ## Docker Setup
 
@@ -93,13 +95,16 @@ AZURE_RESOURCE_GROUP=MyGroup AZURE_WEBAPP_NAME=MyWebApp DOCKER_REGISTRY=mydocker
 
 ## Vercel Hosting
 
-The project contains `vercel.json` and `api/` serverless endpoints so the frontend can be hosted on Vercel and still use `GET /api/message` and `POST /api/submit`.
+This project is configured as a static frontend deployment on Vercel that calls a dedicated backend on Render.
+
+The frontend uses a centralized config generator (`scripts/generateConfig.js`) and `public/config.js` to resolve the Render backend URL at build-time.
 
 ### Deploy to Vercel
 
-- Connect this repository to Vercel
-- Use the default root project settings
-- Vercel will serve `public/index.html` and `api/*.js` automatically
+- Set environment variable `API_URL=https://devops-rkyj.onrender.com`
+- Set environment variable `FRONTEND_URL=https://<your-vercel-domain>` for backend CORS if desired
+- Vercel will run the `build` script if present, which generates `public/config.js`
+- Static frontend is served from `public/`
 
 ## Dependency and Vulnerability Checks
 

@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "build": "node scripts/generateConfig.js",
+    "postinstall": "node scripts/generateConfig.js",
     "test": "echo \"No tests configured\"",
     "docker:build": "docker build -t simple-app .",
     "docker:run": "docker run --rm -p 3000:3000 simple-app",
@@ -12,6 +14,7 @@
     "check-vuln": "npm audit --audit-level=low"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.2.1"
   }
 }
