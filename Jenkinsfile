@@ -41,16 +41,16 @@ pipeline {
         }
 
         stage('SonarQube Scan') {
-            steps {
-                bat '''
-                npx sonar-scanner ^
-                -D"sonar.projectKey=simple-app" ^
-                -D"sonar.sources=." ^
-                -D"sonar.host.url=http://localhost:9000" ^
-                -D"sonar.token=%SONAR_TOKEN%"
-                '''
-            }
-        }
+    steps {
+        bat '''
+        sonar-scanner ^
+        -D"sonar.projectKey=simple-app" ^
+        -D"sonar.sources=." ^
+        -D"sonar.host.url=http://localhost:9000" ^
+        -D"sonar.token=%SONAR_TOKEN%"
+        '''
+    }
+}
 
         stage('Docker Build') {
             steps {
