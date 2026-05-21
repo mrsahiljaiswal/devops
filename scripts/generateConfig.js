@@ -12,5 +12,7 @@ const defaultApiUrl = window.location.hostname === 'localhost' ? 'http://localho
 window.APP_CONFIG.apiBaseUrl = window.APP_CONFIG.apiBaseUrl || defaultApiUrl;
 `;
 
+// Ensure the public directory exists before writing the generated config file.
+fs.mkdirSync(path.dirname(configPath), { recursive: true });
 fs.writeFileSync(configPath, configContents, 'utf8');
 console.log(`Generated public/config.js with API_URL=${apiBaseUrl}`);
