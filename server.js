@@ -12,7 +12,6 @@ const FRONTEND_URLS = (process.env.FRONTEND_URL || '')
 const allowedOrigins = [...new Set([...
   FRONTEND_URLS,
   'http://localhost:3000',
-  'https://devops-rkyj.onrender.com',
   'https://devops-red-two.vercel.app'
 ])];
 
@@ -20,17 +19,17 @@ const corsOptions = {
   origin: (origin, callback) => {
     // Allow non-browser requests (e.g. curl or server-to-server)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
     return callback(new Error(`CORS policy does not allow access from origin ${origin}.`));
   },
   credentials: true,
+  optionsSuccessStatus: 200,
 };
 
 // Middleware
 app.use(cors(corsOptions));
-app.options('/*', cors(corsOptions));
 app.use(express.json());
 app.use(express.static('public'));
 

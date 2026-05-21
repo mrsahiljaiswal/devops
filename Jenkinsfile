@@ -36,7 +36,14 @@ pipeline {
 
         stage('OWASP Dependency Check') {
             steps {
-                bat 'echo OWASP Dependency Check completed successfully'
+                dependencyCheck additionalArguments: '--scan .',
+                odcInstallation: 'OWASP'
+            }
+        }
+
+        stage('Publish OWASP Report') {
+            steps {
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
 
@@ -48,7 +55,13 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                bat 'echo SonarQube analysis completed successfully'
+                bat '''
+                sonar-scanner ^
+                -D"sonar.projectKey=simple-app" ^
+                -D"sonar.sources=." ^
+                -D"sonar.host.url=http://localhost:9000" ^
+                -D"sonar.token=%SONAR_TOKEN%"
+                '''
             }
         }
 
