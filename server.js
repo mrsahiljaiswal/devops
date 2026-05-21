@@ -9,23 +9,28 @@ const FRONTEND_URLS = (process.env.FRONTEND_URL || '')
   .split(',')
   .map(url => url.trim())
   .filter(Boolean);
-const allowedOrigins = [...new Set([...FRONTEND_URLS, 'http://localhost:3000'])];
+const allowedOrigins = [...new Set([...
+  FRONTEND_URLS,
+  'http://localhost:3000',
+  'https://devops-rkyj.onrender.com',
+  'https://devops-red-two.vercel.app'
+])];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. curl or server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS policy does not allow access from origin ${origin}.`));
+  },
+  credentials: true,
+};
 
 // Middleware
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow non-browser requests (e.g. curl or server-to-server)
-      if (!origin) return callback(null, true);
-      // Allow any browser origin when no explicit front-end URL is configured.
-      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error('CORS policy does not allow access from the specified Origin.'));
-    },
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.static('public'));
 
