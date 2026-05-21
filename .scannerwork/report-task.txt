@@ -1,0 +1,7 @@
+organization=mrsahiljaiswal
+projectKey=mrsahiljaiswal_devops
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.87945
+dashboardUrl=https://sonarcloud.io/dashboard?id=mrsahiljaiswal_devops
+ceTaskId=AZ5JHZ47iEi-f934ejtm
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZ5JHZ47iEi-f934ejtm

@@ -5,7 +5,6 @@ pipeline {
         DOCKER_IMAGE = 'mrsahiljaiswal/simple-app'
         DOCKER_TAG = 'latest'
         DOCKER_REGISTRY = 'docker.io'
-        SONAR_TOKEN = 'sqp_7f9c3aa7a4ae81fabe8e80427aa19d3303976371'
     }
 
     stages {
@@ -36,7 +35,7 @@ pipeline {
 
         stage('OWASP Dependency Check') {
             steps {
-                dependencyCheck additionalArguments: '--scan .',
+                dependencyCheck additionalArguments: '--scan ./ --format XML',
                 odcInstallation: 'OWASP'
             }
         }
@@ -55,13 +54,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                bat '''
-                sonar-scanner ^
-                -D"sonar.projectKey=simple-app" ^
-                -D"sonar.sources=." ^
-                -D"sonar.host.url=http://localhost:9000" ^
-                -D"sonar.token=%SONAR_TOKEN%"
-                '''
+                bat 'sonar-scanner'
             }
         }
 
@@ -91,23 +84,20 @@ pipeline {
                 }
             }
         }
-
-        stage('Continuous Deployment') {
-            steps {
-                bat 'echo Deploying application to Azure/Vercel/Render'
-            }
-        }
-
-        stage('Azure Deploy') {
-            steps {
-                bat 'echo Azure deployment stage completed'
-            }
-        }
     }
 
     post {
+
         always {
             archiveArtifacts artifacts: 'README.md,Dockerfile,Jenkinsfile,vercel.json,sonar-project.properties', fingerprint: true
+        }
+
+        success {
+            echo 'CI/CD Pipeline executed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Please check logs.'
         }
     }
 }
