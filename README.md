@@ -65,19 +65,41 @@ docker run --rm -p 3000:3000 simple-app
 docker-compose up
 ```
 
-## Jenkins CI/CD Pipeline
+## CI/CD Pipelines
 
-The `Jenkinsfile` includes stages for:
+This repository includes both Azure DevOps and Jenkins CI/CD definitions.
 
-- Checkout
-- Install dependencies
-- Dependency check
-- Security scan
-- Docker build
-- Docker push (optional)
-- Azure deploy 
+### Azure DevOps
+
+- Pipeline file: `azure-pipelines.yml`
+- Runs on pushes to `main`
+- Stages:
+  - Build & Test
+  - SonarCloud Analysis
+  - Docker Build
+- Key checks:
+  - `npm install`
+  - `npm outdated --depth=0`
+  - `npm audit --audit-level=low`
+  - `sonar-scanner`
+
+### Jenkins
+
+- Pipeline file: `Jenkinsfile`
+- Stages include:
+  - Checkout
+  - Verify files
+  - Install dependencies
+  - Dependency check
+  - OWASP dependency check
+  - Security scan
+  - SonarQube scan
+  - Docker build
+  - Docker login and push
 
 You can use Jenkins credentials for Docker Hub and Azure service principal authentication.
+
+See `CICD_PIPELINE.md` for a full CI/CD flow summary.
 
 ## Azure Integration
 
