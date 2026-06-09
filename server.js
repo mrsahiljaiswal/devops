@@ -12,7 +12,9 @@ const FRONTEND_URLS = (process.env.FRONTEND_URL || '')
 const allowedOrigins = [...new Set([...
   FRONTEND_URLS,
   'http://localhost:3000',
-  'https://devops-red-two.vercel.app'
+  'https://devops-red-two.vercel.app',
+  // Render deployment origin (add more as needed or set FRONTEND_URL env)
+  'https://devops-rkyj.onrender.com'
 ])];
 
 const corsOptions = {
